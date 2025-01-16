@@ -1,59 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Feedback Form</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Builder</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="form-container">
-        <h2>Product Feedback Form</h2>
-        <form id="feedbackForm">
-            <label for="productName">Product Name:</label>
-            <input type="text" id="productName" name="productName" placeholder="Enter product name" required><br><br>
+  <h1>Form Builder</h1>
 
-            <label for="rating">Rate the Product (1-5):</label>
-            <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+  <!-- Form Field Builder -->
+  <div class="form-builder">
+    <label for="fieldName">Field Name:</label>
+    <input type="text" id="fieldName" placeholder="Enter field name">
 
-            <label>Would you recommend this product?</label>
-            <input type="radio" id="recommendYes" name="recommend" value="Yes" required> Yes
-            <input type="radio" id="recommendNo" name="recommend" value="No" required> No<br><br>
+    <label for="fieldType">Field Type:</label>
+    <select id="fieldType">
+      <option value="text">Text</option>
+      <option value="email">Email</option>
+      <option value="number">Number</option>
+      <option value="password">Password</option>
+      <option value="file">File</option>
+      <option value="checkbox">Checkbox</option>
+      <option value="radio">Radio</option>
+    </select>
 
-            <label for="improvement">What can be improved?</label>
-            <textarea id="improvement" name="improvement" rows="4" placeholder="Provide your suggestions"></textarea><br><br>
+    <label for="isRequired">Required:</label>
+    <input type="checkbox" id="isRequired">
 
-            <label for="favoriteFeature">Your Favorite Feature:</label>
-            <input type="text" id="favoriteFeature" name="favoriteFeature" placeholder="E.g., Design, Performance"><br><br>
+    <button onclick="addField()">Add Field</button>
+  </div>
 
-            <label for="email">Your Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required><br><br>
+  <!-- Table for Added Fields -->
+  <table id="fieldTable">
+    <thead>
+      <tr>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Required</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-            <label for="fileUpload">Upload a screenshot (if any):</label>
-            <input type="file" id="fileUpload" name="fileUpload" accept="image/*"><br><br>
+  <!-- Button to Generate HTML -->
+  <button onclick="generateHTML()">Generate HTML</button>
 
-            <button type="submit">Submit Feedback</button>
-        </form>
+  <!-- Downloadable HTML Output -->
+  <div id="generatedHTML" style="display: none;">
+    <h2>Generated HTML:</h2>
+    <pre id="htmlOutput"></pre>
+    <button id="downloadBtn">Download HTML</button>
+  </div>
 
-        <h3>Feedback Summary:</h3>
-        <table id="feedbackTable">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Rating</th>
-                    <th>Recommend</th>
-                    <th>Improvements</th>
-                    <th>Favorite Feature</th>
-                    <th>Email</th>
-                    <th>Screenshot</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <button id="downloadHtmlBtn">Download HTML</button>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
