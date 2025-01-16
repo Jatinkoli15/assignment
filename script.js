@@ -1,55 +1,76 @@
-document.getElementById('feedbackForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+const fieldTable = document.querySelector("#fieldTable tbody");
+const htmlOutput = document.getElementById("htmlOutput");
+const generatedHTML = document.getElementById("generatedHTML");
+const downloadBtn = document.getElementById("downloadBtn");
 
-    // Get form data
-    const productName = document.getElementById('productName').value;
-    const rating = document.getElementById('rating').value;
-    const recommend = document.querySelector('input[name="recommend"]:checked').value;
-    const improvement = document.getElementById('improvement').value || 'N/A';
-    const favoriteFeature = document.getElementById('favoriteFeature').value || 'N/A';
-    const email = document.getElementById('email').value;
-    const fileUpload = document.getElementById('fileUpload').files[0]
-        ? document.getElementById('fileUpload').files[0].name
-        : 'No File';
+function addField() {
+  const fieldName = document.getElementById("fieldName").value;
+  const fieldType = document.getElementById("fieldType").value;
+  const isRequired = document.getElementById("isRequired").checked;
 
-    // Create a new row in the table
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>${productName}</td>
-        <td>${rating}</td>
-        <td>${recommend}</td>
-        <td>${improvement}</td>
-        <td>${favoriteFeature}</td>
-        <td>${email}</td>
-        <td>${fileUpload}</td>
-    `;
+  if (!fieldName) {
+    alert("Please enter a field name.");
+    return;
+  }
 
-    // Append the new row to the table
-    document.querySelector('#feedbackTable tbody').appendChild(newRow);
+  // Add field to the table
+  const row = fieldTable.insertRow();
+  row.innerHTML = `
+    <td>${fieldName}</td>
+    <td>${fieldType}</td>
+    <td>${isRequired ? "Yes" : "No"}</td>
+  `;
 
-    // Reset the form
-    document.getElementById('feedbackForm').reset();
-});
+  // Clear the form fields after adding the row
+  document.getElementById("fieldName").value = '';
+  document.getElementById("fieldType").value = 'text';
+  document.getElementById("isRequired").checked = false;
+}
 
-document.getElementById('downloadHtmlBtn').addEventListener('click', function() {
-    const formHtml = document.getElementById('dataForm').outerHTML;
-    const tableHtml = document.getElementById('dataTable').outerHTML;
+function generateHTML() {
+  let formHTML = '<form>\n';
+  const rows = fieldTable.rows;
 
-    const fullHtml = `
-        <html>
-        <head><title>Form Data</title></head>
-        <body>
-            ${formHtml}
-            ${tableHtml}
-        </body>
-        </html>
-    `;
+  for (let i = 0; i < rows.length; i++) {
+    const fieldName = rows[i].cells[0].innerText;
+    const fieldType = rows[i].cells[1].innerText.toLowerCase();
+    const isRequired = rows[i].cells[2].innerText === "Yes" ? "required" : "";
 
-    const blob = new Blob([fullHtml], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'form-data.html';
-    a.click();
-    URL.revokeObjectURL(url);
-});
+    if (fieldType === 'textarea') {
+      formHTML += `  <label for="${fieldName}">${fieldName}</label>\n`;
+      formHTML += `  <textarea id="${fieldName}" name="${fieldName}" ${isRequired}></textarea>\n`;
+    } else {
+      formHTML += `  <label for="${fieldName}">${fieldName}</label>\n`;
+      formHTML += `  <input type="${fieldType}" id="${fieldName}" name="${fieldName}" ${isRequired} />\n`;
+    }
+  }
+
+  formHTML += '</form>';
+
+  // Wrap the form HTML inside a basic HTML structure
+  const fullHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generated Form</title>
+</head>
+<body>
+  ${formHTML}
+</body>
+</html>`;
+
+  // Show the generated HTML in the output section
+  htmlOutput.textContent = fullHTML;
+  generatedHTML.style.display = "block";
+
+  // Handle download functionality
+  downloadBtn.onclick = function () {
+    const blob = new Blob([fullHTML], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "generated_form.html";  // Set the name of the downloaded file
+    link.click();  // Trigger the download action
+  };
+}
